@@ -1,6 +1,6 @@
+const webpack = require('webpack')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 const CopyPlugin = require('copy-webpack-plugin')
-const DefineEnvPlugin = require('define-env-plugin')
 const path = require('path')
 
 module.exports = {
@@ -15,7 +15,17 @@ module.exports = {
       template: './src/index.html',
     }),
     new CopyPlugin({ patterns: [{ from: 'src/assets', to: 'assets' }] }),
-    new DefineEnvPlugin(['APP_VERSION', 'AUTHOR']),
+    new webpack.DefinePlugin({
+      PRODUCTION: JSON.stringify(true),
+      VERSION: JSON.stringify('5fa3b9'),
+      BROWSER_SUPPORTS_HTML5: true,
+      TWO: '1+1',
+      'typeof window': JSON.stringify('object'),
+      'process.env': {
+        NODE_ENV: JSON.stringify(process.env.NODE_ENV),
+        REACT_APP_AR_URL: JSON.stringify(process.env.REACT_APP_AR_URL),
+      },
+    }),
   ],
   resolve: {
     alias: {
