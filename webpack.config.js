@@ -1,5 +1,6 @@
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 const CopyPlugin = require('copy-webpack-plugin')
+const DefineEnvPlugin = require('define-env-plugin')
 const path = require('path')
 
 module.exports = {
@@ -14,6 +15,7 @@ module.exports = {
       template: './src/index.html',
     }),
     new CopyPlugin({ patterns: [{ from: 'src/assets', to: 'assets' }] }),
+    new DefineEnvPlugin(['APP_VERSION', 'AUTHOR']),
   ],
   resolve: {
     alias: {

@@ -4,6 +4,8 @@ import { FullScreen, useFullScreenHandle } from 'react-full-screen'
 import { BaseButton, BaseIconButton, WebGLRenderer } from 'Components/Common'
 // Import utils
 import { mobileCheck } from 'Utils'
+// Import configs
+import { AR_URL } from 'Configs'
 // Import styles
 import './style.scss'
 // Import images
@@ -41,7 +43,7 @@ const Main = () => {
 
   // Listener for AR button click
   const handleAR = () => {
-    if (isMobile) window.open(process.env.REACT_APP_AR_URL, '_blank')
+    if (isMobile) window.open(AR_URL, '_blank')
     else setShowQR(true)
   }
 
