@@ -1,43 +1,37 @@
 # About
 
-Habour Space
+Fiat 3D viewer(non-AR source)
 
 **Live Demo**
-http://habour-landing.surge.sh/
 
 **Preview**
-![Banner](https://github.com/DevArt002/Habour-Landing/blob/master/preview.gif)
 
 # How to install
 
 Run locally: `yarn` && `yarn dev`
 Build, `yarn build`
 
-# How to run storybook
-
-Run: `yarn storybook`
-Build: `yarn build-storybook`
-
 # Technologies/Libraries
 
 - [x] SPA using React/React Hooks
 - [x] Sass/Scss
-- [x] Storybook
 - [x] GSAP
 - [x] Webpack
 - [x] Babel
 - [x] ESLint
 - [x] StyleLint
 - [x] Prettier
+- [x] Three.js
 - ...
 
 # Implemented Features
 
-- [x] Animated collapse button
-- [x] Animated select box
-- [x] Animated testimonial carousel
-- [x] Animated faq item
-- [x] Faq filter
-- [x] Storybook for base components
-- [x] Responsiveness
-- [x] Online temporary deployment
+- [x] Fiat model load&material fix
+- [x] Orbit control
+- [x] Open door by hotspot clicking
+- [x] Layout(Logo, button, label)
+- [x] Refresh
+- [x] Full screen
+- [x] QR code modal from AR view button, on desktop web browser
+- [x] 8thwall AR view from AR view button, on mobile device
+- [x] Iframe embeddable
