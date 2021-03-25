@@ -3,8 +3,7 @@
 Fiat 3D viewer(non-AR source)
 
 **Live Demo**
-
-**Preview**
+https://master.d2hitp85t480gf.amplifyapp.com/
 
 # How to install
 
