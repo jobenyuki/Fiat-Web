@@ -1,5 +1,7 @@
 import * as THREE from 'three'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls'
+// TODO remove
+import Stats from 'three/examples/jsm/libs/stats.module'
 // Import utils
 import {
   getCubeMapTexture,
@@ -15,9 +17,10 @@ import { ASSET_PATH } from 'Configs'
 const isMobile = mobileCheck()
 
 class WebGLRenderer {
-  constructor(container, loadingFinishedCB) {
+  constructor(container, loadingFinishedCB, loadingProgressChangedCB) {
     this.container = container // Parent node of canvas
     this.loadingFinishedCB = loadingFinishedCB // Callback for loading finished
+    this.loadingProgressChangedCB = loadingProgressChangedCB // Callback for loading progress changed
     this.width = container.offsetWidth // Container width
     this.height = container.offsetHeight // Container height
     this.aspect = this.width / this.height // Camera aspect
@@ -31,11 +34,13 @@ class WebGLRenderer {
     this.doorLockIconPath = `${ASSET_PATH}/images/door_lock.png` // Path of door lock
     this.doorUnlockIconPath = `${ASSET_PATH}/images/door_unlock.png` // Path of door unlock
     this.headlightNormalPath = `${ASSET_PATH}/images/Headlight_Normal_0.png` // Path of door unlock
+    this.progressableAssetPathArr = [this.modelPath, this.envMapPath] // Path array of assets
     this.leftDoorPivot = new THREE.Vector3(-65, 0, -57) // Left door pivot
     this.rightDoorPivot = new THREE.Vector3(65, 0, -57) // Right door pivot
     this.yAxis = new THREE.Vector3(0, 1, 0) // Normalized vector3 for y axis
     this.doorAnimation = [] // Door GSAP animation array
     this.loadedAssets = false // Flag for checking if assets were loaded or not
+    this.loadingProgress = new Array(this.progressableAssetPathArr.length) // Progress of loading status
   }
 
   /**
@@ -62,6 +67,10 @@ class WebGLRenderer {
     this.renderer.outputEncoding = THREE.sRGBEncoding
     this.container.appendChild(this.renderer.domElement)
 
+    // TODO remove
+    this.stats = new Stats()
+    this.container.appendChild(this.stats.dom)
+
     this.pmremGenerator = new THREE.PMREMGenerator(this.renderer)
     this.pmremGenerator.compileEquirectangularShader()
   }
@@ -80,7 +89,7 @@ class WebGLRenderer {
     this.camera = new THREE.PerspectiveCamera(40, this.aspect, 0.01, 1000)
     this.controls = new OrbitControls(this.camera, this.renderer.domElement)
     this.controls.maxPolarAngle = Math.PI * 0.5
-    this.controls.enableDamping = true
+    this.controls.enableDamping = false
     this.controls.autoRotate = true
     this.controls.autoRotateSpeed = 0.3
 
@@ -107,8 +116,13 @@ class WebGLRenderer {
    */
   loadAssets = () => {
     Promise.all([
-      getGLTF(this.modelPath),
-      getCubeMapTexture(this.envMapPath, this.pmremGenerator),
+      getGLTF(this.progressableAssetPathArr[0], this.loadingProgressListener, 0),
+      getCubeMapTexture(
+        this.progressableAssetPathArr[1],
+        this.pmremGenerator,
+        this.loadingProgressListener,
+        1,
+      ),
       getTexture(this.shadowPath, this.renderer),
       getTexture(this.doorLockIconPath, this.renderer),
       getTexture(this.doorUnlockIconPath, this.renderer),
@@ -128,6 +142,17 @@ class WebGLRenderer {
       this.animationSetup()
       this.loadedAssets = true
     })
+  }
+
+  /**
+   * Loading progress callback
+   */
+  loadingProgressListener = (progress, pathIndex) => {
+    this.loadingProgress[pathIndex] = progress
+    const totalProgress = (
+      this.loadingProgress.reduce((a, b) => a + b, 0) / this.progressableAssetPathArr.length
+    ).toFixed(0)
+    this.loadingProgressChangedCB(totalProgress)
   }
 
   /**
@@ -231,6 +256,8 @@ class WebGLRenderer {
     this.scene.add(this.model)
     this.scene.add(this.shadow)
     this.scene.add(this.doorLockHotspot)
+    // TODO remove
+    console.log(this.renderer.info)
   }
 
   /**
@@ -426,6 +453,8 @@ class WebGLRenderer {
     this.controls.update()
     // Set hotspot to look at camera all the time
     this.doorLockHotspot.lookAt(this.camera.position)
+    // TODO remove
+    this.stats.update()
   }
 
   /**

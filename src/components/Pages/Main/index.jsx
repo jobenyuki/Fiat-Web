@@ -5,7 +5,7 @@ import { BaseButton, BaseIconButton, WebGLRenderer } from 'Components/Common'
 // Import utils
 import { mobileCheck } from 'Utils'
 // Import configs
-import { AR_URL } from 'Configs'
+import { AR_URL, LOGO_URL } from 'Configs'
 // Import styles
 import './style.scss'
 // Import images
@@ -19,6 +19,7 @@ import REFRESH_ICON from 'Assets/images/Refresh_Button.svg'
 const isMobile = mobileCheck()
 
 const Main = () => {
+  const [loadingProgress, setLoadingProgress] = useState(0)
   const [loading, setLoading] = useState(true)
   const [showQR, setShowQR] = useState(false)
   const fullScreenHandle = useFullScreenHandle()
@@ -27,7 +28,11 @@ const Main = () => {
 
   // Create threejs renderer when component mounted
   useEffect(() => {
-    renderer.current = new WebGLRenderer(rendererContainer.current, handleLoadingFinished)
+    renderer.current = new WebGLRenderer(
+      rendererContainer.current,
+      handleLoadingFinished,
+      handleLoadingProgressChanged,
+    )
     renderer.current.init()
     return () => {
       if (renderer.current) {
@@ -36,29 +41,39 @@ const Main = () => {
     }
   }, [])
 
+  // Listener for loading progress changed
+  const handleLoadingProgressChanged = (progress) => {
+    setLoadingProgress(progress)
+  }
+
   // Listener for loading finished
   const handleLoadingFinished = () => {
     setLoading(false)
   }
 
   // Listener for AR button click
-  const handleAR = () => {
+  const handleARClick = () => {
     if (isMobile) window.open(AR_URL, '_blank')
     else setShowQR(true)
   }
 
   // Listener for Fullscreen toogle button click
-  const handleFullScreenToogle = () => {
+  const handleFullScreenToogleClick = () => {
     if (isMobile) window.open(window.location.href, '_blank')
     else if (fullScreenHandle.active) fullScreenHandle.exit()
     else fullScreenHandle.enter()
   }
 
   // Listener for Refresh button click
-  const handleRefresh = () => {
+  const handleRefreshClick = () => {
     if (renderer.current) {
       renderer.current.refresh()
     }
+  }
+
+  // Listener for Logo click
+  const handleLogoClick = () => {
+    window.open(LOGO_URL, '_blank')
   }
 
   // Listener for QR model close click
@@ -71,7 +86,8 @@ const Main = () => {
       <div className="main">
         {loading && (
           <div className="main__loading-container">
-            <img className="main__loading" src={LOADING_GIF} />
+            <p className="main__loading-label">{loadingProgress}%</p>
+            <img className="main__loading-gif" src={LOADING_GIF} />
           </div>
         )}
         {showQR && (
@@ -86,12 +102,12 @@ const Main = () => {
           </div>
         )}
         <div className="main__logo">
-          <img src={CAR_LOGO_ICON} />
+          <img src={CAR_LOGO_ICON} onClick={handleLogoClick} />
         </div>
         <div className="main__controls-group">
-          <BaseIconButton icon={AR_ICON} onClick={handleAR} />
-          <BaseIconButton icon={FULL_SCREEN_ICON} onClick={handleFullScreenToogle} />
-          <BaseIconButton icon={REFRESH_ICON} onClick={handleRefresh} />
+          <BaseIconButton icon={AR_ICON} onClick={handleARClick} />
+          <BaseIconButton icon={FULL_SCREEN_ICON} onClick={handleFullScreenToogleClick} />
+          <BaseIconButton icon={REFRESH_ICON} onClick={handleRefreshClick} />
         </div>
         <BaseButton className="main__shop-button">Shop Now</BaseButton>
         <p className="main__label">1972 Fiat 850 Spider</p>

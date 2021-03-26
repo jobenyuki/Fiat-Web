@@ -26,7 +26,7 @@ const getCanvasRelativePosition = (e, canvas, width, height) => {
  * @param pmremGenerator pmremGenerator
  * @returns
  */
-const getCubeMapTexture = (path, pmremGenerator) => {
+const getCubeMapTexture = (path, pmremGenerator, loadingProgressCB, pathIndex) => {
   return new Promise((resolve, reject) => {
     new RGBELoader().setDataType(THREE.UnsignedByteType).load(
       path,
@@ -36,7 +36,9 @@ const getCubeMapTexture = (path, pmremGenerator) => {
 
         resolve(envMap)
       },
-      undefined,
+      ({ loaded, total }) => {
+        loadingProgressCB((loaded / total) * 100, pathIndex)
+      },
       reject,
     )
   })
@@ -47,7 +49,7 @@ const getCubeMapTexture = (path, pmremGenerator) => {
  * @param path path of gltf model
  * @returns
  */
-const getGLTF = (path) => {
+const getGLTF = (path, loadingProgressCB, pathIndex) => {
   const gltfLoader = new GLTFLoader()
   const dracoLoader = new DRACOLoader()
 
@@ -60,7 +62,9 @@ const getGLTF = (path) => {
       (gltf) => {
         resolve(gltf.scene)
       },
-      undefined,
+      ({ loaded, total }) => {
+        loadingProgressCB((loaded / total) * 100, pathIndex)
+      },
       reject,
     )
   })
