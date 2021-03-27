@@ -8,6 +8,7 @@ import {
   getCanvasRelativePosition,
   getGLTF,
   getTexture,
+  rotateAboutPoint,
   rotateGsapTo,
   mobileCheck,
 } from 'Utils'
@@ -383,7 +384,7 @@ class WebGLRenderer {
     )
 
     this.doorLockHotspot.scale.set(scale, scale, 1)
-    this.doorLockHotspot.position.set(0, 4 * scale, 0)
+    this.doorLockHotspot.position.set(0, (isMobile ? 4 : 8) * scale, 0)
   }
 
   /**
@@ -454,7 +455,7 @@ class WebGLRenderer {
 
     this.doorAnimation.forEach((anim) => {
       anim.pause()
-      anim.seek(0)
+      anim.reverse()
     })
 
     this.doorLockHotspot.picked = false
