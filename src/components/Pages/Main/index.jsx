@@ -11,7 +11,7 @@ import './style.scss'
 // Import images
 import LOADING_GIF from 'Assets/images/loading.gif'
 import EIGHT_QR from 'Assets/images/8code.svg'
-import CAR_LOGO_ICON from 'Assets/images/cars_com_logo 1.svg'
+import CAR_LOGO_ICON from 'Assets/images/cars_com_logo 1.png'
 import AR_ICON from 'Assets/images/AR_VIEW_Button.svg'
 import FULL_SCREEN_ICON from 'Assets/images/Full_Screen_Button.svg'
 import REFRESH_ICON from 'Assets/images/Refresh_Button.svg'
@@ -59,8 +59,7 @@ const Main = () => {
 
   // Listener for Fullscreen toogle button click
   const handleFullScreenToogleClick = () => {
-    if (isMobile) window.open(window.location.href, '_blank')
-    else if (fullScreenHandle.active) fullScreenHandle.exit()
+    if (fullScreenHandle.active) fullScreenHandle.exit()
     else fullScreenHandle.enter()
   }
 
@@ -72,7 +71,7 @@ const Main = () => {
   }
 
   // Listener for Logo click
-  const handleLogoClick = () => {
+  const handleHomeNavigateClick = () => {
     window.open(LOGO_URL, '_blank')
   }
 
@@ -102,14 +101,18 @@ const Main = () => {
           </div>
         )}
         <div className="main__logo">
-          <img src={CAR_LOGO_ICON} onClick={handleLogoClick} />
+          <img src={CAR_LOGO_ICON} onClick={handleHomeNavigateClick} />
         </div>
         <div className="main__controls-group">
           <BaseIconButton icon={AR_ICON} onClick={handleARClick} />
-          <BaseIconButton icon={FULL_SCREEN_ICON} onClick={handleFullScreenToogleClick} />
+          {!isMobile && (
+            <BaseIconButton icon={FULL_SCREEN_ICON} onClick={handleFullScreenToogleClick} />
+          )}
           <BaseIconButton icon={REFRESH_ICON} onClick={handleRefreshClick} />
         </div>
-        <BaseButton className="main__shop-button">Shop Now</BaseButton>
+        <BaseButton className="main__shop-button" onClick={handleHomeNavigateClick}>
+          Shop Now
+        </BaseButton>
         <p className="main__label">1972 Fiat 850 Spider</p>
         <div className="main__webgl-renderer" ref={rendererContainer} />
       </div>

@@ -1,7 +1,7 @@
 import * as THREE from 'three'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls'
 // TODO remove
-import Stats from 'three/examples/jsm/libs/stats.module'
+// import Stats from 'three/examples/jsm/libs/stats.module'
 // Import utils
 import {
   getCubeMapTexture,
@@ -68,8 +68,8 @@ class WebGLRenderer {
     this.container.appendChild(this.renderer.domElement)
 
     // TODO remove
-    this.stats = new Stats()
-    this.container.appendChild(this.stats.dom)
+    // this.stats = new Stats()
+    // this.container.appendChild(this.stats.dom)
 
     this.pmremGenerator = new THREE.PMREMGenerator(this.renderer)
     this.pmremGenerator.compileEquirectangularShader()
@@ -243,11 +243,11 @@ class WebGLRenderer {
       map: this.doorUnlockIcon,
       side: THREE.DoubleSide,
       transparent: true,
-      opacity: 0.5,
+      opacity: 1,
     })
-    const doorLockGeo = new THREE.CircleBufferGeometry(10)
+    const doorLockGeo = new THREE.CircleBufferGeometry(1)
     this.doorLockHotspot = new THREE.Mesh(doorLockGeo, doorLockMat)
-    this.doorLockHotspot.position.set(0, 80, 0)
+    this.doorLockHotspot.position.set(0, 120, 0)
     this.doorLockHotspot.interactable = true
     this.doorLockHotspot.picked = false
     this.doorLockHotspot.rotateX(Math.PI / 2)
@@ -257,7 +257,7 @@ class WebGLRenderer {
     this.scene.add(this.shadow)
     this.scene.add(this.doorLockHotspot)
     // TODO remove
-    console.log(this.renderer.info)
+    // console.log(this.renderer.info)
   }
 
   /**
@@ -312,6 +312,7 @@ class WebGLRenderer {
     window.addEventListener('mousemove', this.onMouseMove, false)
     window.addEventListener('click', this.onMouseClick, false)
     window.addEventListener('touchend', this.onTouchEnd, false)
+    this.controls.addEventListener('change', this.onOrbitControlsChange, false)
   }
 
   /**
@@ -370,6 +371,22 @@ class WebGLRenderer {
   }
 
   /**
+   * Orbitcontrols change event listener
+   */
+  onOrbitControlsChange = () => {
+    const scaleVector = new THREE.Vector3()
+    const scaleFactor = isMobile ? 20 : 40
+    const scale = Math.min(
+      scaleVector.subVectors(this.doorLockHotspot.position, this.camera.position).length() /
+        scaleFactor,
+      65,
+    )
+
+    this.doorLockHotspot.scale.set(scale, scale, 1)
+    this.doorLockHotspot.position.set(0, 4 * scale, 0)
+  }
+
+  /**
    * Raycaster update
    */
   raycasterUpdate = ({ x, y }) => {
@@ -418,7 +435,6 @@ class WebGLRenderer {
     this.setPointerCursor(false)
     this.curHoveredInteractableObj = null
     if (this.prevHoveredObj) {
-      this.prevHoveredObj.material.opacity = 0.5
       this.prevHoveredObj = null
     }
   }
@@ -454,7 +470,7 @@ class WebGLRenderer {
     // Set hotspot to look at camera all the time
     this.doorLockHotspot.lookAt(this.camera.position)
     // TODO remove
-    this.stats.update()
+    // this.stats.update()
   }
 
   /**
