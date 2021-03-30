@@ -5,6 +5,9 @@ Fiat 3D viewer(non-AR source)
 **Live Demo**
 https://master.d2hitp85t480gf.amplifyapp.com/
 
+**Preview**
+![Banner](https://github.com/jobenyuki/Fiat-Web/blob/master/preview.gif)
+
 # How to install
 
 Run locally: `yarn` && `yarn dev`
